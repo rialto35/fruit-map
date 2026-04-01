@@ -11,19 +11,37 @@ import { getCrossInsights } from '@/lib/cross-analysis';
 import StepIndicator from './StepIndicator';
 import FieldRenderer from './FieldRenderer';
 
+// 점수 계산에 사용되는 핵심 필드
+const REQUIRED_KEYS: (keyof ChecklistData)[] = [
+  'openness', 'believe_god', 'believe_spirit', 'believe_soul',
+  'bible_interest', 'trust_level',
+];
+
+function getMissingCount(data: ChecklistData): number {
+  return REQUIRED_KEYS.filter(k => !data[k]).length;
+}
+
 export default function WizardContainer() {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [data, setData] = useState<ChecklistData>({});
+  const [showWarning, setShowWarning] = useState(false);
 
   const currentStep = STEPS[step];
   const isLast = step === STEPS.length - 1;
+  const missing = getMissingCount(data);
 
   const setField = (key: string, value: string | string[]) => {
     setData(prev => ({ ...prev, [key]: value }));
+    setShowWarning(false);
   };
 
   const handleSubmit = () => {
+    if (missing > 0) {
+      setShowWarning(true);
+      return;
+    }
+
     const dims = computeDimensions(data);
     const match = generateMatching(dims, data);
     const teaching = getTeachingMethod(data.mbti);
@@ -76,6 +94,13 @@ export default function WizardContainer() {
           })}
         </div>
 
+        {/* Validation Warning */}
+        {showWarning && (
+          <div className="bg-[#FFF3E0] border border-[#FFB74D] rounded-xl px-4 py-3 mb-4 text-[13px] text-[#E65100]">
+            필수 항목 {missing}개가 비어있습니다: 오픈여부(3번), 하나님 믿음(11번), 영적 존재(11번), 영혼(12번), 성경 관심(13번), 신뢰도(17번)를 확인하세요.
+          </div>
+        )}
+
         {/* Navigation */}
         <div className="flex items-center gap-3 pt-4 border-t border-[#EDE7DF]">
           {step > 0 && (
@@ -92,9 +117,13 @@ export default function WizardContainer() {
             <button
               type="button"
               onClick={handleSubmit}
-              className="px-7 py-3 rounded-[10px] border-none bg-gradient-to-br from-[#7B61FF] to-[#5B4BC9] text-[15px] font-bold text-white shadow-[0_4px_12px_rgba(123,97,255,0.3)]"
+              className={`px-7 py-3 rounded-[10px] border-none text-[15px] font-bold text-white shadow-[0_4px_12px_rgba(123,97,255,0.3)] ${
+                missing > 0
+                  ? 'bg-gradient-to-br from-[#9E8FCC] to-[#7B6FA3]'
+                  : 'bg-gradient-to-br from-[#7B61FF] to-[#5B4BC9]'
+              }`}
             >
-              📊 분석 실행
+              📊 분석 실행 {missing > 0 && `(미입력 ${missing})`}
             </button>
           ) : (
             <button
