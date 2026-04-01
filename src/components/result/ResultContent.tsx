@@ -5,13 +5,18 @@ import { useState, useEffect } from 'react';
 import type { ChecklistData, Dimension, MatchResult, TeachingMethod } from '@/lib/types';
 import type { CrossPattern } from '@/lib/cross-analysis';
 import type { CounselingResult } from '@/lib/counseling';
+import type { CompatibilityResult } from '@/lib/compatibility';
+import type { EnneagramType } from '@/lib/enneagram';
 import ProfileHeader from './ProfileHeader';
+import OneLineMessage from './OneLineMessage';
 import DimensionRadarChart from './DimensionRadarChart';
 import WarningCards from './WarningCards';
 import PaceInfo from './PaceInfo';
 import CrossInsights from './CrossInsights';
 import TeachingGuide from './TeachingGuide';
 import CounselingGuide from './CounselingGuide';
+import CompatibilityCard from './CompatibilityCard';
+import EnneagramInsight from './EnneagramInsight';
 import CurriculumRoadmap from './CurriculumRoadmap';
 
 interface ResultPayload {
@@ -21,6 +26,9 @@ interface ResultPayload {
   teaching: TeachingMethod | null;
   crossInsights: CrossPattern[];
   counseling: CounselingResult | null;
+  oneliner: string;
+  compatibility: CompatibilityResult[];
+  enneagram: EnneagramType | null;
 }
 
 function EmptyState({ message }: { message: string }) {
@@ -67,7 +75,7 @@ export default function ResultContent() {
     </div>
   );
 
-  const { data, dims, match, teaching, crossInsights, counseling } = payload;
+  const { data, dims, match, teaching, crossInsights, counseling, oneliner, compatibility, enneagram } = payload;
   const isCompact = match.lessons.some(l => l.phase === 2);
 
   return (
@@ -82,6 +90,7 @@ export default function ResultContent() {
 
         {/* 공통: 프로파일 */}
         <ProfileHeader name={data.name || ''} match={match} />
+        <OneLineMessage message={oneliner || ''} />
         <DimensionRadarChart dimensions={dims} />
         <WarningCards warnings={match.warnings} />
         <PaceInfo pace={match.pace} totalWeeks={match.totalWeeks} />
@@ -117,6 +126,8 @@ export default function ResultContent() {
                 고민(싹) 항목을 선택하면 맞춤 상담 가이드가 생성됩니다.
               </div>
             )}
+            <CompatibilityCard results={compatibility || []} />
+            {enneagram && <EnneagramInsight enneagram={enneagram} />}
           </>
         )}
 
@@ -126,6 +137,7 @@ export default function ResultContent() {
             {teaching && data.mbti && data.mbti !== '모름' && (
               <TeachingGuide method={teaching} mbti={data.mbti} />
             )}
+            {enneagram && <EnneagramInsight enneagram={enneagram} />}
             <CurriculumRoadmap
               lessons={match.lessons}
               isCompact={isCompact}

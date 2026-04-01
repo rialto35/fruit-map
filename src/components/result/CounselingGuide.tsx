@@ -51,6 +51,22 @@ export default function CounselingGuide({ guide }: Props) {
         </div>
       </div>
 
+      {/* 선호 환경 + 소통 + 그림자 */}
+      <div className="flex flex-col gap-1.5 mb-3">
+        <div className="flex items-start gap-2 text-[12px] bg-white rounded-lg px-3 py-2 border border-[#E0D8F0]">
+          <span className="shrink-0">🏠</span>
+          <div><span className="font-semibold text-[#6B5D4D]">선호 환경</span> <span className="text-[#5C4F3D]">{type.preferred_environment}</span></div>
+        </div>
+        <div className="flex items-start gap-2 text-[12px] bg-white rounded-lg px-3 py-2 border border-[#E0D8F0]">
+          <span className="shrink-0">💬</span>
+          <div><span className="font-semibold text-[#6B5D4D]">소통 방식</span> <span className="text-[#5C4F3D]">{type.preferred_communication}</span></div>
+        </div>
+        <div className="flex items-start gap-2 text-[12px] bg-[#FFF8F0] rounded-lg px-3 py-2 border border-[#FFE0B2]">
+          <span className="shrink-0">🌑</span>
+          <div><span className="font-semibold text-[#E65100]">그림자 영역</span> <span className="text-[#5C4F3D]">{type.shadow_area}</span></div>
+        </div>
+      </div>
+
       {/* 접근 순서 */}
       <Section title="📌 접근 순서" defaultOpen={true}>
         <ol className="list-none p-0 m-0 flex flex-col gap-1.5">

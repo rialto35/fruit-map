@@ -9,6 +9,9 @@ import { generateMatching } from '@/lib/matching';
 import { getTeachingMethod } from '@/lib/teaching-method';
 import { getCrossInsights } from '@/lib/cross-analysis';
 import { generateCounselingGuide } from '@/lib/counseling';
+import { getOneLiner } from '@/lib/oneliner';
+import { getCompatibility } from '@/lib/compatibility';
+import { getEnneagramInsight } from '@/lib/enneagram';
 import StepIndicator from './StepIndicator';
 import FieldRenderer from './FieldRenderer';
 
@@ -53,7 +56,10 @@ export default function WizardContainer() {
       data.concerns || [],
       crossInsights.map(ci => ci.id),
     );
-    const payload = { data, dims, match, teaching, crossInsights, counseling };
+    const oneliner = getOneLiner(match.typeName, data.concerns || []);
+    const compatibility = getCompatibility(data.mbti, data.guide_mbti, data.teacher_mbti, data.servant_mbti);
+    const enneagram = getEnneagramInsight(data.enneagram);
+    const payload = { data, dims, match, teaching, crossInsights, counseling, oneliner, compatibility, enneagram };
     sessionStorage.setItem('fruitmap-result', JSON.stringify(payload));
     router.push('/result');
   };

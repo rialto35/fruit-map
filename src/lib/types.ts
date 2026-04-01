@@ -12,6 +12,10 @@ export interface ChecklistData {
   children?: string;
   family_faith?: string;
   mbti?: string;           // 16 MBTI types or "모름"
+  enneagram?: string;      // "1"~"9" or "모름"
+  guide_mbti?: string;     // 인도자 MBTI
+  teacher_mbti?: string;   // 교사 MBTI (선택)
+  servant_mbti?: string;   // 섬김이 MBTI (선택)
 
   // Step 2: 배경 파악
   religion_bg?: string;

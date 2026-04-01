@@ -18,6 +18,9 @@ export interface CounselingPrinciple {
   storytelling_style: string;
   session_length: string;
   transition_to_education: string;
+  preferred_environment: string;
+  preferred_communication: string;
+  shadow_area: string;
 }
 
 export interface ConcernGuide {
@@ -87,6 +90,9 @@ const TYPE_COUNSELING: Record<string, CounselingPrinciple> = {
     storytelling_style: '짧고 임팩트 있는 이야기. 반전이 있거나 깨달음을 주는 유형. 결론을 직접 말하지 않고 여운을 남기는 방식.',
     session_length: '15~20분',
     transition_to_education: '"이런 질문에 대한 답을 함께 찾아보자"로 연결',
+    preferred_environment: '밝고 깔끔한 카페, 1:1 또는 소그룹',
+    preferred_communication: '핵심 중심, 질문으로 발견 유도, 여운 남기기',
+    shadow_area: '깊이 없이 빠르게 넘어갈 수 있음, 표면적 감동에 만족할 위험',
   },
   '관계형성우선형': {
     icon: '🤝',
@@ -115,6 +121,9 @@ const TYPE_COUNSELING: Record<string, CounselingPrinciple> = {
     storytelling_style: '이야기보다 자기 개방이 효과적. 인도자의 진솔한 경험을 짧게 나누는 것이 최선.',
     session_length: '30~40분 (상담이라기보다 만남)',
     transition_to_education: '3~5회 만남 후, 열매가 "왜 이렇게 잘 해주세요?"라고 물을 때가 전환점',
+    preferred_environment: '편안한 카페, 식사 자리, 산책길 — 상담 느낌 최소화',
+    preferred_communication: '일상 대화 위주, 자기 개방, 침묵 허용',
+    shadow_area: '조급함, 성과 집착, 열매의 속도를 무시할 위험',
   },
   '논리적탐구형': {
     icon: '🔍',
@@ -143,6 +152,9 @@ const TYPE_COUNSELING: Record<string, CounselingPrinciple> = {
     storytelling_style: '실제 사례, 통계, 연구 결과, 역사적 사건 중심. TED 강연 스타일.',
     session_length: '20~30분 (토론형)',
     transition_to_education: '지적 호기심이 충분히 자극되면 자연스럽게',
+    preferred_environment: '조용한 카페, 서점 근처, 토론 가능한 분위기',
+    preferred_communication: '논리적 근거, 데이터/사례 제시, 질문형 대화',
+    shadow_area: '감정 회피, 도움 요청 어려움, 지적 우월감',
   },
   '돌봄회복형': {
     icon: '💛',
@@ -171,6 +183,9 @@ const TYPE_COUNSELING: Record<string, CounselingPrinciple> = {
     storytelling_style: '자연과 계절 변화 이야기, 회복의 은유. 짧고 조용한 이야기. 결론을 강요하지 않는 열린 이야기.',
     session_length: '20~30분 (열매 상태에 따라 유동적)',
     transition_to_education: '열매가 "요즘 좀 나아진 것 같아요"라고 말할 때. 최소 3~5회 상담 후.',
+    preferred_environment: '조용하고 안전한 공간, 따뜻한 음료, 일정한 장소',
+    preferred_communication: '부드러운 톤, 짧은 문장, 경청 위주, 침묵 허용',
+    shadow_area: '상처 재자극 위험, 의존 관계 형성, 진도 지연',
   },
   '핵심압축형': {
     icon: '⚡',
@@ -199,6 +214,9 @@ const TYPE_COUNSELING: Record<string, CounselingPrinciple> = {
     storytelling_style: '1분 이내의 마이크로 스토리. 반전 있는 짧은 실화. 명언·격언 + 짧은 에피소드.',
     session_length: '10~15분 (짧고 임팩트)',
     transition_to_education: '2~3회 만남 후, "흥미로운 자료가 있는데 같이 볼까요?"로 가볍게 제안',
+    preferred_environment: '짧은 만남, 카페/전화/영상통화 유연하게',
+    preferred_communication: '핵심만, 실용적 조언, 1가지 포인트',
+    shadow_area: '깊이 부족, 관계 피상적 유지, 갑자기 연락 두절',
   },
   '성장가속형': {
     icon: '🚀',
@@ -226,6 +244,9 @@ const TYPE_COUNSELING: Record<string, CounselingPrinciple> = {
     storytelling_style: '도전과 성취 이야기. 역경 극복, 스포츠·창업·탐험 등 도전적 소재.',
     session_length: '20~25분 (코칭형)',
     transition_to_education: '1~2회면 충분. "체계적으로 공부해볼 의향 있으세요?"로 직접 제안',
+    preferred_environment: '에너지 있는 카페, 활동적 환경, 야외도 OK',
+    preferred_communication: '격려와 도전, 코칭 스타일, 실행 과제',
+    shadow_area: '깊이보다 속도 우선, 감정 건너뛸 위험, 과잉 자신감',
   },
   '표준양육형': {
     icon: '📖',
@@ -251,6 +272,9 @@ const TYPE_COUNSELING: Record<string, CounselingPrinciple> = {
     storytelling_style: '일상적이고 친근한 이야기. 주변에서 일어날 법한 에피소드.',
     session_length: '20~30분',
     transition_to_education: '2~3회 만남 후, "같이 공부해볼 좋은 자료가 있다"고 제안',
+    preferred_environment: '편안한 카페, 교회, 정기적 만남 장소',
+    preferred_communication: '자연스러운 대화, 균형 잡힌 톤, 인도자 경험 공유',
+    shadow_area: '특별한 리스크 없으나, 형식적 상담으로 흐를 위험',
   },
 };
 

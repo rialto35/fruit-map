@@ -2,7 +2,7 @@ import type { StepConfig, FieldConfig } from './types';
 import { MBTI_TYPES } from './types';
 
 export const STEPS: StepConfig[] = [
-  { id: 'basic', title: '기본 정보', icon: '👤', fields: [1, 2, 20, 3, 4, 19] },
+  { id: 'basic', title: '기본 정보', icon: '👤', fields: [1, 2, 20, 3, 4, 19, 26, 23, 24, 25] },
   { id: 'background', title: '배경 파악', icon: '📋', fields: [5, 6] },
   { id: 'inner', title: '내면 탐색', icon: '🌱', fields: [7, 8, 9] },
   { id: 'spiritual', title: '영적 상태', icon: '✝️', fields: [10, 21, 11, 12, 13] },
@@ -236,6 +236,54 @@ export const FIELD_CONFIG: Record<number, FieldConfig> = {
       { value: '우선 들어보겠다 수준', label: '우선 들어보겠다 수준' },
       { value: '확답 없이 시작', label: '확답 없이 시작' },
       { value: '외부 일정(군대/취업 등)과 충돌 가능', label: '외부 일정(군대/취업 등)과 충돌 가능' },
+    ],
+  },
+  23: {
+    label: '인도자 MBTI',
+    description: '인도자(천사)의 MBTI',
+    type: 'select',
+    key: 'guide_mbti',
+    options: [
+      { value: '모름', label: '모름 / 미입력' },
+      ...MBTI_TYPES.map(t => ({ value: t, label: t })),
+    ],
+  },
+  24: {
+    label: '교사 MBTI (선택)',
+    description: '담당 교사의 MBTI (있는 경우)',
+    type: 'select',
+    key: 'teacher_mbti',
+    options: [
+      { value: '모름', label: '모름 / 미입력 / 해당없음' },
+      ...MBTI_TYPES.map(t => ({ value: t, label: t })),
+    ],
+  },
+  25: {
+    label: '섬김이 MBTI (선택)',
+    description: '담당 섬김이의 MBTI (있는 경우)',
+    type: 'select',
+    key: 'servant_mbti',
+    options: [
+      { value: '모름', label: '모름 / 미입력 / 해당없음' },
+      ...MBTI_TYPES.map(t => ({ value: t, label: t })),
+    ],
+  },
+  26: {
+    label: '에니어그램 (선택)',
+    description: '열매의 에니어그램 유형 (모르면 "모름" 선택)',
+    type: 'select',
+    key: 'enneagram',
+    options: [
+      { value: '모름', label: '모름 / 미입력' },
+      { value: '1', label: '1번 — 개혁가' },
+      { value: '2', label: '2번 — 조력자' },
+      { value: '3', label: '3번 — 성취자' },
+      { value: '4', label: '4번 — 예술가' },
+      { value: '5', label: '5번 — 탐구가' },
+      { value: '6', label: '6번 — 충실가' },
+      { value: '7', label: '7번 — 열정가' },
+      { value: '8', label: '8번 — 도전가' },
+      { value: '9', label: '9번 — 평화주의자' },
     ],
   },
 };
