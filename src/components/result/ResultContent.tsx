@@ -37,10 +37,18 @@ function EmptyState({ message }: { message: string }) {
   );
 }
 
+const TABS = [
+  { key: 'counseling', label: '📋 상담 가이드', desc: '복음방 전 · 만남 준비' },
+  { key: 'curriculum', label: '📚 커리큘럼', desc: '복음방 중 · 교육 진행' },
+] as const;
+
+type TabKey = typeof TABS[number]['key'];
+
 export default function ResultContent() {
   const router = useRouter();
   const [payload, setPayload] = useState<ResultPayload | null>(null);
   const [error, setError] = useState(false);
+  const [activeTab, setActiveTab] = useState<TabKey>('counseling');
 
   useEffect(() => {
     try {
@@ -72,22 +80,58 @@ export default function ResultContent() {
           ← 입력으로 돌아가기
         </button>
 
+        {/* 공통: 프로파일 */}
         <ProfileHeader name={data.name || ''} match={match} />
         <DimensionRadarChart dimensions={dims} />
         <WarningCards warnings={match.warnings} />
         <PaceInfo pace={match.pace} totalWeeks={match.totalWeeks} />
         <CrossInsights patterns={crossInsights || []} />
 
-        {teaching && data.mbti && data.mbti !== '모름' && (
-          <TeachingGuide method={teaching} mbti={data.mbti} />
+        {/* 탭 */}
+        <div className="flex gap-2 mb-5 sticky top-0 z-10 bg-white pt-2 pb-1 -mx-1 px-1">
+          {TABS.map(tab => (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => setActiveTab(tab.key)}
+              className={`flex-1 py-2.5 px-3 rounded-xl border-[1.5px] text-center transition-all ${
+                activeTab === tab.key
+                  ? 'bg-gradient-to-br from-[#7B61FF] to-[#5B4BC9] text-white border-transparent shadow-[0_2px_8px_rgba(123,97,255,0.25)]'
+                  : 'bg-[#FAFAF7] text-[#6B5D4D] border-[#DDD5C9]'
+              }`}
+            >
+              <div className="text-[14px] font-bold">{tab.label}</div>
+              <div className={`text-[10px] mt-0.5 ${activeTab === tab.key ? 'text-white/70' : 'text-[#A69680]'}`}>
+                {tab.desc}
+              </div>
+            </button>
+          ))}
+        </div>
+
+        {/* 탭 1: 상담 가이드 */}
+        {activeTab === 'counseling' && (
+          <>
+            {counseling && <CounselingGuide guide={counseling} />}
+            {!counseling && (
+              <div className="text-center py-8 text-[#A69680] text-sm">
+                고민(싹) 항목을 선택하면 맞춤 상담 가이드가 생성됩니다.
+              </div>
+            )}
+          </>
         )}
 
-        {counseling && <CounselingGuide guide={counseling} />}
-
-        <CurriculumRoadmap
-          lessons={match.lessons}
-          isCompact={isCompact}
-        />
+        {/* 탭 2: 커리큘럼 */}
+        {activeTab === 'curriculum' && (
+          <>
+            {teaching && data.mbti && data.mbti !== '모름' && (
+              <TeachingGuide method={teaching} mbti={data.mbti} />
+            )}
+            <CurriculumRoadmap
+              lessons={match.lessons}
+              isCompact={isCompact}
+            />
+          </>
+        )}
 
         <div className="text-center pt-4 border-t border-[#EDE7DF]">
           <p className="text-[11px] text-[#A69680]">열매맵 v1.0 · 영적 성장 맞춤 교육 설계</p>
