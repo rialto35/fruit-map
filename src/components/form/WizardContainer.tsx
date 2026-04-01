@@ -54,8 +54,8 @@ export default function WizardContainer() {
       crossInsights.map(ci => ci.id),
     );
     const payload = { data, dims, match, teaching, crossInsights, counseling };
-    const encoded = btoa(encodeURIComponent(JSON.stringify(payload)));
-    router.push(`/result?d=${encoded}`);
+    sessionStorage.setItem('fruitmap-result', JSON.stringify(payload));
+    router.push('/result');
   };
 
   return (

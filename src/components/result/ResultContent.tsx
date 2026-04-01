@@ -1,6 +1,7 @@
 'use client';
 
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import type { ChecklistData, Dimension, MatchResult, TeachingMethod } from '@/lib/types';
 import type { CrossPattern } from '@/lib/cross-analysis';
 import type { CounselingResult } from '@/lib/counseling';
@@ -22,39 +23,41 @@ interface ResultPayload {
   counseling: CounselingResult | null;
 }
 
-export default function ResultContent() {
-  const searchParams = useSearchParams();
+function EmptyState({ message }: { message: string }) {
   const router = useRouter();
-  const encoded = searchParams.get('d');
-
-  if (!encoded) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F7F3EE] via-[#EDE7DF] to-[#E8E0D5] p-4">
-        <div className="text-center">
-          <p className="text-[#6B5D4D] mb-4">분석 데이터가 없습니다.</p>
-          <button onClick={() => router.push('/')} className="px-6 py-2 bg-[#C4A573] text-white rounded-lg font-semibold">
-            처음으로
-          </button>
-        </div>
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F7F3EE] via-[#EDE7DF] to-[#E8E0D5] p-4">
+      <div className="text-center">
+        <p className="text-[#6B5D4D] mb-4">{message}</p>
+        <button onClick={() => router.push('/')} className="px-6 py-2 bg-[#C4A573] text-white rounded-lg font-semibold">
+          처음으로
+        </button>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
-  let payload: ResultPayload;
-  try {
-    payload = JSON.parse(decodeURIComponent(atob(encoded)));
-  } catch {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F7F3EE] via-[#EDE7DF] to-[#E8E0D5] p-4">
-        <div className="text-center">
-          <p className="text-[#6B5D4D] mb-4">데이터를 불러올 수 없습니다.</p>
-          <button onClick={() => router.push('/')} className="px-6 py-2 bg-[#C4A573] text-white rounded-lg font-semibold">
-            처음으로
-          </button>
-        </div>
-      </div>
-    );
-  }
+export default function ResultContent() {
+  const router = useRouter();
+  const [payload, setPayload] = useState<ResultPayload | null>(null);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem('fruitmap-result');
+      if (!raw) { setError(true); return; }
+      setPayload(JSON.parse(raw));
+    } catch {
+      setError(true);
+    }
+  }, []);
+
+  if (error) return <EmptyState message="분석 데이터가 없습니다." />;
+  if (!payload) return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F7F3EE] via-[#EDE7DF] to-[#E8E0D5]">
+      <p className="text-[#8A7D6B]">로딩 중...</p>
+    </div>
+  );
 
   const { data, dims, match, teaching, crossInsights, counseling } = payload;
   const isCompact = match.lessons.some(l => l.phase === 2);
