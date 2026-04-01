@@ -9,7 +9,7 @@ import { generateMatching } from '@/lib/matching';
 import { getTeachingMethod } from '@/lib/teaching-method';
 import { getCrossInsights } from '@/lib/cross-analysis';
 import { generateCounselingGuide } from '@/lib/counseling';
-import { getOneLiner } from '@/lib/oneliner';
+import { getOneLiner, getConcernOneLiner } from '@/lib/oneliner';
 import { getCompatibility } from '@/lib/compatibility';
 import { getEnneagramInsight } from '@/lib/enneagram';
 import { getMbtiProfile, getTypeMbtiOneLiner, getConcernBrainTop3 } from '@/lib/profiles-data';
@@ -57,7 +57,7 @@ export default function WizardContainer() {
       data.concerns || [],
       crossInsights.map(ci => ci.id),
     );
-    const oneliner = getTypeMbtiOneLiner(match.typeName, data.mbti) || getOneLiner(match.typeName, data.concerns || []);
+    const oneliner = getConcernOneLiner(match.typeName, data.concerns || []) || getTypeMbtiOneLiner(match.typeName, data.mbti) || getOneLiner(match.typeName, data.concerns || []);
     const mbtiProfile = getMbtiProfile(data.mbti);
     const brainTop3 = getConcernBrainTop3(data.concerns || []);
     const compatibility = getCompatibility(data.mbti, data.guide_mbti, data.teacher_mbti, data.servant_mbti);

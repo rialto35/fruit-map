@@ -138,6 +138,29 @@ export default function ResultContent() {
 
         {/* 탭 1: 상담 가이드 */}
         <div className={`tab-panel ${activeTab !== 'counseling' ? 'hidden' : ''}`}>
+          {/* 관계 컨텍스트 */}
+          {data.guide_relation && data.guide_relation !== '기타' && (
+            <div className={`mb-4 px-4 py-2.5 rounded-xl text-[12px] border ${
+              data.guide_relation === '가족'
+                ? 'bg-[#FFF8E1] border-[#FFD54F] text-[#E65100]'
+                : data.guide_relation === '친구'
+                ? 'bg-[#E8F5E9] border-[#A5D6A7] text-[#2E7D32]'
+                : 'bg-[#F3F4F6] border-[#D1D5DB] text-[#374151]'
+            }`}>
+              <span className="font-bold">
+                {data.guide_relation === '가족' && '👨‍👩‍👧 가족 관계 — '}
+                {data.guide_relation === '친구' && '🤝 친구 관계 — '}
+                {data.guide_relation === '직장동료' && '💼 직장동료 관계 — '}
+                {data.guide_relation === '교회지인' && '⛪ 교회 지인 관계 — '}
+                {data.guide_relation === '이웃' && '🏠 이웃 관계 — '}
+              </span>
+              {data.guide_relation === '가족' && '기존 가족 역학이 있습니다. 영적 권위보다 신뢰와 일상 대화 중심으로 접근하세요. "가르치는" 태도는 오히려 역효과가 날 수 있습니다.'}
+              {data.guide_relation === '친구' && '친밀감이 있어 솔직한 대화가 가능합니다. 다만 복음방 맥락이 어색하지 않도록 자연스러운 전환이 중요합니다.'}
+              {data.guide_relation === '직장동료' && '공적 관계가 바탕입니다. 직장 내 불편함이 생기지 않도록 경계를 배려하며 진행하세요.'}
+              {data.guide_relation === '교회지인' && '교회 내 관계로 신뢰 기반이 있습니다. 과도한 기대나 압박이 부담이 되지 않도록 주의하세요.'}
+              {data.guide_relation === '이웃' && '지리적 접근성이 장점입니다. 반복적 일상 접촉을 통해 자연스럽게 깊이를 더해가세요.'}
+            </div>
+          )}
           {/* ⑨ 상담 가이드 */}
           {counseling && <CounselingGuide guide={counseling} />}
           {!counseling && (

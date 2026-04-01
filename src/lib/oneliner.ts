@@ -81,3 +81,14 @@ export function getOneLiner(typeName: string, concerns: string[]): string {
   }
   return data.default;
 }
+
+/** 고민별 특화 문장만 반환. 매칭 없으면 빈 문자열. */
+export function getConcernOneLiner(typeName: string, concerns: string[]): string {
+  const key = TYPE_KEY_MAP[typeName] || typeName;
+  const data = ONELINERS[key];
+  if (!data) return '';
+  for (const c of concerns) {
+    if (data.concerns[c]) return data.concerns[c];
+  }
+  return '';
+}
