@@ -81,10 +81,15 @@ export default function ResultContent() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F7F3EE] via-[#EDE7DF] to-[#E8E0D5] p-4">
-      <div className="max-w-[560px] mx-auto bg-white rounded-[20px] shadow-[0_4px_24px_rgba(0,0,0,0.06)] p-6">
-        <button onClick={() => router.push('/')} className="border-none bg-transparent text-[#8A7D6B] text-[13px] cursor-pointer p-0 mb-3">
-          ← 입력으로 돌아가기
-        </button>
+      <div className="max-w-[560px] mx-auto bg-white rounded-[20px] shadow-[0_4px_24px_rgba(0,0,0,0.06)] p-6 print-container">
+        <div className="flex items-center justify-between mb-3 no-print">
+          <button onClick={() => router.push('/')} className="border-none bg-transparent text-[#8A7D6B] text-[13px] cursor-pointer p-0">
+            ← 입력으로 돌아가기
+          </button>
+          <button onClick={() => window.print()} className="px-4 py-1.5 text-[12px] font-semibold rounded-lg bg-[#F0EDFF] text-[#5B4BC9] border border-[#E0D8F0]">
+            🖨️ 인쇄 / PDF 저장
+          </button>
+        </div>
 
         {/* ① 프로파일 헤더 */}
         <ProfileHeader name={data.name || ''} match={match} />
@@ -113,7 +118,7 @@ export default function ResultContent() {
         <PaceInfo pace={match.pace} totalWeeks={match.totalWeeks} />
 
         {/* 탭 */}
-        <div className="flex gap-2 mb-5 sticky top-0 z-10 bg-white pt-2 pb-1 -mx-1 px-1">
+        <div className="tab-bar flex gap-2 mb-5 sticky top-0 z-10 bg-white pt-2 pb-1 -mx-1 px-1">
           {TABS.map(tab => (
             <button
               key={tab.key}
@@ -132,42 +137,38 @@ export default function ResultContent() {
         </div>
 
         {/* 탭 1: 상담 가이드 */}
-        {activeTab === 'counseling' && (
-          <>
-            {/* ⑨ 상담 가이드 */}
-            {counseling && <CounselingGuide guide={counseling} />}
-            {!counseling && (
-              <div className="text-center py-8 text-[#A69680] text-sm">
-                고민(싹) 항목을 선택하면 맞춤 상담 가이드가 생성됩니다.
-              </div>
-            )}
+        <div className={`tab-panel ${activeTab !== 'counseling' ? 'hidden' : ''}`}>
+          {/* ⑨ 상담 가이드 */}
+          {counseling && <CounselingGuide guide={counseling} />}
+          {!counseling && (
+            <div className="text-center py-8 text-[#A69680] text-sm">
+              고민(싹) 항목을 선택하면 맞춤 상담 가이드가 생성됩니다.
+            </div>
+          )}
 
-            {/* ⑩ 심층 인사이트 */}
-            <CrossInsights patterns={crossInsights || []} />
+          {/* ⑩ 심층 인사이트 */}
+          <CrossInsights patterns={crossInsights || []} />
 
-            {/* ⑫ 인도자-열매 궁합 */}
-            <CompatibilityCard results={compatibility || []} />
+          {/* ⑫ 인도자-열매 궁합 */}
+          <CompatibilityCard results={compatibility || []} />
 
-            {/* 에니어그램 (상담 관점) */}
-            {enneagram && <EnneagramInsight enneagram={enneagram} />}
-          </>
-        )}
+          {/* 에니어그램 (상담 관점) */}
+          {enneagram && <EnneagramInsight enneagram={enneagram} />}
+        </div>
 
         {/* 탭 2: 커리큘럼 */}
-        {activeTab === 'curriculum' && (
-          <>
-            {/* ⑪ 교수법 가이드 */}
-            {teaching && data.mbti && data.mbti !== '모름' && (
-              <TeachingGuide method={teaching} mbti={data.mbti} />
-            )}
+        <div className={`tab-panel ${activeTab !== 'curriculum' ? 'hidden' : ''}`}>
+          {/* ⑪ 교수법 가이드 */}
+          {teaching && data.mbti && data.mbti !== '모름' && (
+            <TeachingGuide method={teaching} mbti={data.mbti} />
+          )}
 
-            {/* 에니어그램 (교육 관점) */}
-            {enneagram && <EnneagramInsight enneagram={enneagram} />}
+          {/* 에니어그램 (교육 관점) */}
+          {enneagram && <EnneagramInsight enneagram={enneagram} />}
 
-            {/* ⑬ 커리큘럼 로드맵 */}
-            <CurriculumRoadmap lessons={match.lessons} isCompact={isCompact} />
-          </>
-        )}
+          {/* ⑬ 커리큘럼 로드맵 */}
+          <CurriculumRoadmap lessons={match.lessons} isCompact={isCompact} />
+        </div>
 
         {/* ⑭ 푸터 */}
         <div className="text-center pt-4 border-t border-[#EDE7DF]">
