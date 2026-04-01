@@ -3,14 +3,10 @@
 // 3축 모듈: 유형별 원칙 × 고민별 콘텐츠 × 교차패턴 보완
 // ============================================================
 
-// ─── 타입 정의 ───
+import { getStoriesForType, type Story } from './stories-database';
+export type { Story };
 
-export interface Story {
-  title: string;
-  content: string;
-  point: string;
-  best_for: string[];
-}
+// ─── 타입 정의 ───
 
 export interface CounselingPrinciple {
   icon: string;
@@ -28,7 +24,6 @@ export interface ConcernGuide {
   icon: string;
   core_emotion: string;
   empathy_point: string;
-  stories: Story[];
   guide_questions: string[];
   mentor_phrases: string[];
   caution: string[];
@@ -46,7 +41,7 @@ export interface CrossPatternCounseling {
 export interface CounselingResult {
   type: CounselingPrinciple;
   concerns: { key: string; guide: ConcernGuide }[];
-  stories: { concern: string; title: string; content: string; point: string }[];
+  stories: { concern: string; title: string; content: string; point: string; style: string }[];
   crossSupplements: CrossPatternCounseling[];
 }
 
@@ -268,11 +263,6 @@ const CONCERN_COUNSELING: Record<string, ConcernGuide> = {
     icon: '🏥',
     core_emotion: '불안, 두려움, 통제 상실감',
     empathy_point: '건강은 모든 것의 기반인데, 그것이 흔들리면 삶 전체가 불안해집니다.',
-    stories: [
-      { title: '깁스 안의 근육', content: '다리가 부러져 깁스를 하면 근육이 줄어듭니다. 하지만 재활을 하면 오히려 부러지기 전보다 더 강해지기도 합니다. 우리 몸에는 회복 후 더 강해지는 놀라운 능력이 있습니다.', point: '아픔의 시간이 반드시 손실만은 아니다', best_for: ['돌봄회복형', '관계형성우선형'] },
-      { title: '100세 마라토너', content: '인도의 파우자 싱은 89세에 마라톤을 시작해서 100세에 풀코스를 완주했습니다. 의사들이 불가능하다고 했지만, 그는 "몸이 안 된다고? 아직 해보지도 않았는데"라고 했습니다.', point: '건강의 한계는 생각보다 유연하다', best_for: ['성장가속형', '논리적탐구형'] },
-      { title: '느린 요리', content: '좋은 음식은 천천히 만들어집니다. 푹 고은 사골국처럼, 회복도 시간이 필요합니다. 조급하면 맛이 안 나듯, 몸도 서두르면 제대로 낫지 않습니다.', point: '회복에는 시간과 인내가 필요하다', best_for: ['핵심압축형', '영적수용형'] },
-    ],
     guide_questions: ['요즘 몸 상태가 어떠세요?', '병원은 다니고 계세요?', '건강 때문에 가장 힘든 부분이 뭐예요?', '주변에 도움을 줄 수 있는 분이 계세요?'],
     mentor_phrases: ['많이 힘드셨을 텐데, 이렇게 나와주셔서 감사해요.', '건강 문제는 정말 모든 걸 흔들어놓죠. 충분히 힘드실 거예요.', '지금 당장은 안 보여도, 회복의 힘은 이미 시작되었을 수도 있어요.'],
     caution: ['의학적 조언 금지', '기적적 치유 사례를 들지 않기', '건강이 안 좋은 이유를 찾으려 하지 않기'],
@@ -282,11 +272,6 @@ const CONCERN_COUNSELING: Record<string, ConcernGuide> = {
     icon: '🏠',
     core_emotion: '분노, 서운함, 외로움, 죄책감',
     empathy_point: '가장 가까운 사람에게 받는 상처가 가장 아픕니다.',
-    stories: [
-      { title: '두 고슴도치', content: '추운 겨울, 고슴도치 두 마리가 온기를 나누려 다가갔지만 가시에 찔렸습니다. 멀어지면 춥고, 가까워지면 아프고. 결국 "적당한 거리"를 찾는 데 오랜 시간이 걸렸습니다.', point: '가까운 관계일수록 적절한 거리 조절이 필요하다', best_for: ['논리적탐구형', '표준양육형'] },
-      { title: '나무의 뿌리', content: '태풍에도 쓰러지지 않는 나무의 뿌리는 서로 엉켜있습니다. 겉으로는 따로 서 있지만 뿌리로 연결되어 있어요. 가족도 때때로 그렇습니다.', point: '갈등 속에서도 보이지 않는 연결은 남아있다', best_for: ['돌봄회복형', '영적수용형'] },
-      { title: '비행기 산소마스크', content: '비행기에서 산소마스크가 내려오면 자기 것을 먼저 쓰라고 합니다. 자기가 쓰러지면 옆 사람도 못 살리기 때문입니다.', point: '나 자신을 먼저 돌보는 것은 이기적인 것이 아니다', best_for: ['관계형성우선형', '핵심압축형'] },
-    ],
     guide_questions: ['가족 중에 지금 가장 힘든 관계가 누구인가요?', '그 분과의 사이에서 가장 서운한 점은요?', '지금 가장 바라는 게 뭐예요?'],
     mentor_phrases: ['가족이라서 더 힘든 거예요.', '지금 이렇게 고민하신다는 것 자체가, 그 관계를 포기하지 않았다는 뜻이에요.', '당장 해결이 안 되더라도, 마음의 짐을 나누는 것만으로도 달라질 수 있어요.'],
     caution: ['한쪽 편을 들지 않기', '이혼/절연 등 결정적 조언 금지', '가정폭력 의심 시 전문기관 연결'],
@@ -296,11 +281,6 @@ const CONCERN_COUNSELING: Record<string, ConcernGuide> = {
     icon: '💰',
     core_emotion: '불안, 수치심, 무력감, 조급함',
     empathy_point: '돈 문제는 자존감까지 흔듭니다. 경제적 어려움은 능력의 문제가 아닌 경우가 훨씬 많습니다.',
-    stories: [
-      { title: '대나무의 4년', content: '중국 대나무는 심은 후 4년간 아무 변화가 없습니다. 하지만 5년째 6주 만에 25미터까지 자랍니다. 4년간 뿌리를 내리고 있었기 때문입니다.', point: '지금 안 보이는 시간이 낭비가 아닐 수 있다', best_for: ['돌봄회복형', '관계형성우선형'] },
-      { title: '리셋 버튼', content: '게임에서 잘 안 풀릴 때 리셋하면 처음부터 다시 할 수 있습니다. 하지만 이전 판에서 배운 패턴은 남아있어요. 다시 시작해도 경험은 사라지지 않습니다.', point: '실패의 경험은 다음의 자산이 된다', best_for: ['성장가속형', '핵심압축형'] },
-      { title: '월급 봉투', content: '연봉이 2배가 되어도 행복감은 1.1배밖에 안 올라간다는 연구가 있습니다. 돈이 해결해주는 것과 돈이 해결 못 하는 것을 구분하는 게, 마음을 지키는 방법입니다.', point: '돈과 행복은 비례하지 않는다', best_for: ['논리적탐구형', '표준양육형'] },
-    ],
     guide_questions: ['경제적으로 가장 부담되는 부분이 뭐예요?', '이 상황이 언제부터 시작되었나요?', '지금 가장 급한 게 뭐예요?'],
     mentor_phrases: ['돈 문제는 말하기가 정말 어려운 건데, 나눠주셔서 감사해요.', '경제적 어려움은 누구에게나 올 수 있어요. 본인 탓이 아닙니다.', '혼자 안고 있으면 더 무거워져요. 같이 고민해봐요.'],
     caution: ['구체적 재정 조언 금지', '돈을 빌려주지 않기', '검소하라는 조언 금지'],
@@ -310,10 +290,6 @@ const CONCERN_COUNSELING: Record<string, ConcernGuide> = {
     icon: '💼',
     core_emotion: '불확실성, 답답함, 비교감, 소진',
     empathy_point: '인생의 많은 시간을 보내는 곳에서 힘들면, 삶 전체가 힘들어집니다.',
-    stories: [
-      { title: '미싱 타일 증후군', content: '천장에 타일이 100개 있으면 99개가 있어도 빠진 1개가 눈에 들어옵니다. 직장에서도 잘하는 99가지보다 못하는 1가지에 집중하게 됩니다.', point: '부정적인 것에 집중하는 건 자연스러운 것이지 약한 것이 아니다', best_for: ['논리적탐구형', '성장가속형'] },
-      { title: 'GPS 재탐색', content: '네비게이션이 길을 잘못 안내하면 "재탐색 중"이라고 뜹니다. 진로도 마찬가지예요. 길을 잘못 들어도 "재탐색"이지, "실패"가 아닙니다.', point: '방향 전환은 실패가 아니라 재탐색이다', best_for: ['핵심압축형', '표준양육형'] },
-    ],
     guide_questions: ['지금 직장/진로에서 가장 힘든 부분이 뭐예요?', '이상적으로는 어떤 일을 하고 싶으세요?', '5년 후에 어떤 모습이면 좋겠어요?'],
     mentor_phrases: ['매일 가야 하는 곳이 힘들면, 하루하루가 전쟁이죠.', '진로 고민은 "나는 누구인가"의 고민이기도 해요.', '일로 자신의 가치를 전부 판단하지 않았으면 해요.'],
     caution: ['이직/퇴사 권유 금지', '특정 직업 추천 금지'],
@@ -323,10 +299,6 @@ const CONCERN_COUNSELING: Record<string, ConcernGuide> = {
     icon: '👥',
     core_emotion: '상처, 배신감, 사회불안, 외로움',
     empathy_point: '사람 때문에 받은 상처는 사람을 통해서만 치유될 수 있습니다.',
-    stories: [
-      { title: '거울의 법칙', content: '내가 상대에게 느끼는 감정이 나 자신의 모습을 반영하는 경우가 많습니다. 불편한 사람이 거울일 수 있습니다.', point: '관계의 어려움은 자기 이해의 기회가 될 수 있다', best_for: ['논리적탐구형', '성장가속형'] },
-      { title: '다리 놓기', content: '다리를 놓을 때 양쪽에서 동시에 공사해야 합니다. 한쪽만 놓으면 다리가 완성되지 않아요. 내가 노력해도 상대가 움직이지 않으면, 그건 내 탓이 아닙니다.', point: '관계는 혼자 만드는 것이 아니다', best_for: ['핵심압축형', '표준양육형', '돌봄회복형'] },
-    ],
     guide_questions: ['특히 힘든 관계가 누구인가요?', '그 사람과의 관계에서 가장 원하는 게 뭐예요?', '관계에서 반복되는 패턴이 있나요?'],
     mentor_phrases: ['사람 때문에 받은 상처가 제일 아프죠.', '좋은 관계는 양이 아니라 질입니다.', '지금 저와 만나고 계신 것, 그 자체가 관계를 포기하지 않은 증거예요.'],
     caution: ['상대방을 함께 비난하지 않기', '관계를 끊으라/유지하라 결정을 대신하지 않기'],
@@ -336,10 +308,6 @@ const CONCERN_COUNSELING: Record<string, ConcernGuide> = {
     icon: '🏝️',
     core_emotion: '고립감, 소외감, 존재 가치 의심',
     empathy_point: '사람들 속에 있어도 외로울 수 있습니다. 외로움은 "연결감"의 문제입니다.',
-    stories: [
-      { title: '등대지기', content: '등대지기는 홀로 바다를 지킵니다. 외롭지만 그의 불빛 덕분에 수많은 배가 안전하게 항구에 도착합니다. 혼자라고 느껴져도, 누군가는 당신의 존재로 안전함을 느끼고 있을 수 있습니다.', point: '외로움 속에서도 나의 존재는 누군가에게 의미가 있다', best_for: ['돌봄회복형', '영적수용형'] },
-      { title: '혼밥의 재발견', content: '"선택된 고독"은 오히려 창의성과 자기이해를 높인다는 연구가 있습니다. 문제는 고독 자체가 아니라 "원하지 않는 고립"입니다.', point: '고독과 고립은 다르다', best_for: ['논리적탐구형', '성장가속형'] },
-    ],
     guide_questions: ['요즘 누군가와 마음 편히 이야기할 기회가 있으세요?', '외로움이 언제 가장 크게 느껴지나요?'],
     mentor_phrases: ['외로움은 부끄러운 게 아니에요.', '이렇게 만나서 이야기 나누는 이 시간, 저한테도 소중합니다.', '혼자라고 느끼셔도, 적어도 저는 여기 있습니다.'],
     caution: ['"활동적으로 지내세요" 같은 즉각적 해결책 금지', '외로움을 가볍게 여기지 않기'],
@@ -349,10 +317,6 @@ const CONCERN_COUNSELING: Record<string, ConcernGuide> = {
     icon: '😰',
     core_emotion: '통제 불능감, 미래 불확실성, 과각성',
     empathy_point: '불안은 "미래에 대한 상상력"이 만드는 것입니다. 나쁜 일이 일어날까봐 미리 아픈 것이죠.',
-    stories: [
-      { title: '걱정 인형', content: '과테말라에는 잠자기 전에 작은 인형에게 걱정을 말하고 베개 밑에 넣는 풍습이 있습니다. 중요한 건 "걱정을 내 안에서 꺼내놓는 행위" 자체입니다.', point: '걱정을 말로 꺼내는 것만으로도 불안이 줄어든다', best_for: ['돌봄회복형', '관계형성우선형'] },
-      { title: '불안의 97%', content: '펜실베니아대 연구에 따르면, 사람들이 걱정하는 일의 97%는 실제로 일어나지 않았습니다. 우리 뇌는 최악의 시나리오를 만드는 데 천재적이지만, 예측력은 형편없어요.', point: '걱정의 대부분은 현실이 되지 않는다', best_for: ['논리적탐구형', '핵심압축형'] },
-    ],
     guide_questions: ['요즘 가장 불안한 부분이 뭐예요?', '불안할 때 나만의 대처법이 있으세요?'],
     mentor_phrases: ['불안한 게 당연해요. 그건 자신을 지키려는 마음이에요.', '지금 이 순간, 여기는 안전합니다.'],
     caution: ['"걱정하지 마세요" 금지 (가장 쓸모없는 말)', '공황장애/불안장애 의심 시 전문 상담 연결'],
@@ -362,10 +326,6 @@ const CONCERN_COUNSELING: Record<string, ConcernGuide> = {
     icon: '🧭',
     core_emotion: '공허감, 무의미감, 실존적 불안',
     empathy_point: '바쁘게 살아왔는데 문득 "이게 맞나?" 싶은 순간이 옵니다. 그 질문 자체가 성장의 신호입니다.',
-    stories: [
-      { title: '빅터 프랭클의 의미', content: '심리학자 빅터 프랭클은 강제수용소에서도 삶의 의미를 찾은 사람이 살아남았다고 했습니다. 상황이 아니라 "의미"가 사람을 버티게 합니다.', point: '환경이 아닌 의미가 삶을 지탱한다', best_for: ['논리적탐구형', '영적수용형'] },
-      { title: '점 잇기', content: '스티브 잡스는 "앞을 보고는 점을 이을 수 없다. 뒤를 돌아볼 때만 이어진다"고 했습니다. 지금은 의미 없어 보이는 경험들이 나중에 하나의 그림이 될 수 있습니다.', point: '지금은 보이지 않는 의미가 나중에 드러날 수 있다', best_for: ['성장가속형', '표준양육형'] },
-    ],
     guide_questions: ['"이게 맞나" 싶은 순간이 있으셨나요?', '살면서 가장 보람 있었던 순간은?', '제약이 없다면 뭘 하고 싶으세요?'],
     mentor_phrases: ['그런 질문을 하신다는 것 자체가 중요한 전환점이에요.', '답을 당장 찾지 않아도 괜찮아요. 질문을 품고 사는 것도 의미 있어요.'],
     caution: ['즉각적 답 제시 금지', '종교적 답변으로 바로 넘어가지 않기'],
@@ -375,9 +335,6 @@ const CONCERN_COUNSELING: Record<string, ConcernGuide> = {
     icon: '👶',
     core_emotion: '불안, 죄책감, 비교감, 부담감',
     empathy_point: '부모라는 역할에는 매뉴얼이 없습니다. 최선을 다하고 있는데도 불안한 건 당연합니다.',
-    stories: [
-      { title: '씨앗의 시간표', content: '같은 날 심은 씨앗도 꽃이 피는 시기는 다릅니다. 어떤 건 한 달, 어떤 건 일 년. 하지만 꽃이 늦게 핀다고 나쁜 꽃이 아닙니다.', point: '아이의 성장 속도는 모두 다르고, 그것이 정상이다', best_for: ['돌봄회복형', '표준양육형', '관계형성우선형'] },
-    ],
     guide_questions: ['자녀 교육에서 가장 걱정되는 부분이 뭐예요?', '부모로서 가장 잘하고 있다고 느끼는 부분은요?'],
     mentor_phrases: ['자녀 걱정을 이렇게 하신다는 것 자체가 좋은 부모의 증거예요.', '완벽한 부모는 없어요. "충분히 좋은 부모"면 됩니다.'],
     caution: ['교육 방법 구체적 조언 금지', '다른 아이와 비교 금지'],
@@ -387,10 +344,6 @@ const CONCERN_COUNSELING: Record<string, ConcernGuide> = {
     icon: '💑',
     core_emotion: '실망, 소통 단절, 외로움, 분노',
     empathy_point: '가장 가까운 사이에서 가장 큰 외로움을 느끼는 것, 그것이 부부 갈등의 본질입니다.',
-    stories: [
-      { title: '두 사전', content: '같은 단어를 써도 남편과 아내의 사전은 다릅니다. "피곤해"가 남편에게는 "혼자 있고 싶다"이고, 아내에게는 "안아줘"일 수 있습니다. 대부분의 부부 갈등은 "번역 실패"입니다.', point: '갈등의 대부분은 악의가 아니라 소통 방식의 차이', best_for: ['논리적탐구형', '표준양육형'] },
-      { title: '정원사의 마음', content: '정원사는 꽃이 안 핀다고 뽑지 않습니다. 물을 주고, 잡초를 뽑고, 기다립니다. 부부 관계도 "관리"의 영역입니다.', point: '사랑은 감정이 아니라 돌봄이다', best_for: ['돌봄회복형', '영적수용형'] },
-    ],
     guide_questions: ['배우자와의 관계에서 가장 아쉬운 점이 뭐예요?', '배우자에게 가장 듣고 싶은 말은 뭐예요?'],
     mentor_phrases: ['부부 사이의 문제를 밖에서 이야기하기가 제일 어렵죠.', '갈등을 어떻게 다루느냐가 관계의 질을 결정합니다.'],
     caution: ['배우자 편을 들거나 비난하지 않기', '이혼/별거 권유 절대 금지'],
@@ -400,9 +353,6 @@ const CONCERN_COUNSELING: Record<string, ConcernGuide> = {
     icon: '🔗',
     core_emotion: '수치심, 무력감, 자기혐오, 숨기고 싶음',
     empathy_point: '중독은 의지의 문제가 아닙니다. 뇌의 보상 회로가 바뀐 것이며, 전문적 도움이 필요합니다.',
-    stories: [
-      { title: '늪과 밧줄', content: '늪에 빠진 사람이 혼자 나오려고 발버둥 칠수록 더 깊이 빠집니다. 밖에서 밧줄을 던져줘야 합니다. 중독도 마찬가지입니다.', point: '도움을 요청하는 것이 가장 강한 의지의 표현이다', best_for: ['돌봄회복형', '관계형성우선형'] },
-    ],
     guide_questions: ['혼자 이겨보려고 노력해보신 적 있으세요?', '전문적인 도움을 받아보신 적은요?'],
     mentor_phrases: ['이걸 말씀해주셨다는 것 자체가 대단한 용기입니다.', '중독은 의지가 약해서가 아닙니다.'],
     caution: ['비난·의지 탓 금지', '인도자가 직접 치료하려 하지 않기', '비밀 보장 철저히'],
@@ -412,9 +362,6 @@ const CONCERN_COUNSELING: Record<string, ConcernGuide> = {
     icon: '🕊️',
     core_emotion: '슬픔, 공허, 부정, 분노',
     empathy_point: '상실의 슬픔에는 정해진 기간이 없습니다.',
-    stories: [
-      { title: '빈 의자', content: '한 상담가가 말했습니다. "빈 의자가 사라지는 것이 아니라, 시간이 지나면 그 의자 옆에 다른 의자들이 하나씩 놓이는 겁니다."', point: '상실을 채울 수는 없지만, 그 옆에 새로운 것들이 놓일 수 있다', best_for: ['돌봄회복형', '영적수용형', '관계형성우선형'] },
-    ],
     guide_questions: ['편하실 때 이야기해 주세요. 서두를 필요 없어요.', '가장 그리운 부분이 뭐예요?'],
     mentor_phrases: ['말씀 안 하셔도 괜찮아요. 함께 있는 것만으로도 됩니다.', '슬퍼하시는 게 당연해요. 그만큼 소중한 분이셨으니까요.'],
     caution: ['"시간이 지나면 나아져요" 금지', '울음을 멈추게 하지 않기'],
@@ -424,10 +371,6 @@ const CONCERN_COUNSELING: Record<string, ConcernGuide> = {
     icon: '🌋',
     core_emotion: '분노 뒤의 상처, 좌절, 무력감',
     empathy_point: '분노는 "보호막"입니다. 더 깊은 곳에 있는 상처를 지키기 위해 분노가 먼저 나옵니다.',
-    stories: [
-      { title: '압력솥', content: '압력솥은 증기를 조절하는 밸브가 있습니다. 밸브가 막히면 폭발합니다. 분노도 마찬가지예요. 문제는 분노 자체가 아니라, 표현 방법이 막혀있는 것입니다.', point: '분노 자체가 문제가 아니라 표현 방법이 문제다', best_for: ['논리적탐구형', '핵심압축형'] },
-      { title: '얼음과 물', content: '물과 얼음은 같은 것입니다. 온도만 다를 뿐. 분노와 슬픔도 마찬가지예요. 같은 감정이 얼어붙으면 분노, 녹으면 슬픔이 됩니다.', point: '분노 아래에는 보통 슬픔이나 상처가 있다', best_for: ['돌봄회복형', '영적수용형'] },
-    ],
     guide_questions: ['요즘 화가 날 때가 많으세요?', '화가 지나간 후에 어떤 감정이 남아요?'],
     mentor_phrases: ['화가 나는 건 당연해요. "내가 다치고 있다"는 신호이기도 해요.', '화 뒤에 숨어있는 진짜 감정을 함께 찾아볼까요?'],
     caution: ['분노를 무조건 참으라고 하지 않기', '폭력 가능성 시 전문 상담 연결'],
@@ -437,10 +380,6 @@ const CONCERN_COUNSELING: Record<string, ConcernGuide> = {
     icon: '🪞',
     core_emotion: '자기비하, 비교감, 무가치함',
     empathy_point: '"자신감을 가지세요"는 다리가 아픈 사람에게 "걸으세요"와 같습니다.',
-    stories: [
-      { title: '금이 간 항아리', content: '물을 길어오는 항아리에 금이 가 있어 항상 물이 반만 남았습니다. 하지만 금이 간 쪽 길가에만 꽃이 피어 있었습니다. 새어나간 물이 씨앗에 닿았기 때문입니다.', point: '내 부족함이 누군가에게는 축복이 될 수 있다', best_for: ['돌봄회복형', '영적수용형', '관계형성우선형'] },
-      { title: '점수판 착각', content: '남의 "하이라이트 영상"과 내 "비하인드 영상"을 비교합니다. SNS에서 보이는 타인의 삶은 편집본이고, 내 삶은 무편집본입니다. 비교 자체가 공정하지 않아요.', point: '비교는 불공정한 게임이다', best_for: ['논리적탐구형', '성장가속형'] },
-    ],
     guide_questions: ['자신에 대해 어떻게 생각하세요?', '누군가에게 인정받은 경험이 있으세요?'],
     mentor_phrases: ['본인이 생각하는 것보다 훨씬 괜찮은 분이세요.', '지금 이 자리에 오신 것, 그 자체로 대단한 거예요.'],
     caution: ['"자신감을 가지세요" 금지', '칭찬을 과하게 하지 않기'],
@@ -450,10 +389,6 @@ const CONCERN_COUNSELING: Record<string, ConcernGuide> = {
     icon: '💧',
     core_emotion: '공허, 의미 탐구, 초월적 욕구',
     empathy_point: '물질적으로 충족되어도 채워지지 않는 무언가. 그 갈증을 느끼는 것 자체가 특별합니다.',
-    stories: [
-      { title: '사막의 우물', content: '사막 여행자가 가장 절실한 건 물입니다. 갈증 자체가 "물이 있다"는 증거입니다. 목마르지 않으면 물을 찾지도 않으니까요.', point: '갈증을 느끼는 것은 채워질 수 있다는 신호다', best_for: ['영적수용형', '돌봄회복형'] },
-      { title: '마슬로의 꼭대기', content: '마슬로의 욕구단계론 최상단은 "자아실현"입니다. 기본 욕구가 충족된 후에야 "나는 왜 사는가"를 묻게 됩니다. 영적 갈증은 성숙함의 표현입니다.', point: '영적 갈증은 인간의 가장 높은 욕구 단계', best_for: ['논리적탐구형', '성장가속형'] },
-    ],
     guide_questions: ['영적이라는 게 본인에게 어떤 의미예요?', '삶에서 뭔가 더 있어야 한다고 느끼시나요?'],
     mentor_phrases: ['그런 갈증을 느끼시는 분이 많지 않아요. 특별한 겁니다.', '이 질문에 대한 답을 함께 찾아가면 좋겠어요.'],
     caution: ['즉시 종교적 답변으로 넘어가지 않기', '다른 종교/영적 경험을 비난하지 않기'],
@@ -463,9 +398,6 @@ const CONCERN_COUNSELING: Record<string, ConcernGuide> = {
     icon: '💬',
     core_emotion: '다양',
     empathy_point: '범주에 들어가지 않는 고민도 소중합니다.',
-    stories: [
-      { title: '강물', content: '강물은 바위를 만나면 돌아갑니다. 부딪혀서 깨는 게 아니라 돌아가는 것입니다. 하지만 결국 바다에 도달합니다.', point: '우회도 결국 목적지에 도달하는 방법이다', best_for: ['all'] },
-    ],
     guide_questions: ['요즘 마음에 걸리는 게 있으세요?', '편하게 이야기해 주세요.'],
     mentor_phrases: ['어떤 이야기든 여기서는 괜찮아요.'],
     caution: ['분류하려 하지 않기 — 있는 그대로 듣기'],
@@ -506,19 +438,18 @@ export function generateCounselingGuide(
     .map(c => ({ key: c, guide: CONCERN_COUNSELING[c] }))
     .filter(c => c.guide);
 
-  // 유형에 맞는 예화 필터링
-  const matchedStories = concernGuides.flatMap(({ key, guide }) =>
-    guide.stories
-      .filter(s => s.best_for.includes('all') || s.best_for.includes(typeKey))
-      .map(s => ({ concern: guide.icon + ' ' + key, title: s.title, content: s.content, point: s.point }))
-  );
-
-  // 매칭된 예화가 없으면 첫 번째 예화 사용
-  const finalStories = matchedStories.length > 0
-    ? matchedStories
-    : concernGuides.flatMap(({ key, guide }) =>
-        guide.stories.slice(0, 1).map(s => ({ concern: guide.icon + ' ' + key, title: s.title, content: s.content, point: s.point }))
-      );
+  // 외부 예화 DB에서 유형에 맞는 예화 필터링
+  const stories = concerns.flatMap(c => {
+    const cg = CONCERN_COUNSELING[c];
+    if (!cg) return [];
+    return getStoriesForType(c, typeKey).map(s => ({
+      concern: cg.icon + ' ' + c,
+      title: s.title,
+      content: s.content,
+      point: s.point,
+      style: s.style,
+    }));
+  });
 
   const crossSupplements = crossPatternIds
     .map(id => CROSS_PATTERN_COUNSELING[id])
@@ -527,7 +458,7 @@ export function generateCounselingGuide(
   return {
     type: typePrinciple,
     concerns: concernGuides,
-    stories: finalStories,
+    stories,
     crossSupplements,
   };
 }
