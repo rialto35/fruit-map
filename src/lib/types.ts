@@ -86,10 +86,10 @@ export interface MatchResult {
 
 // ─── MBTI 교수법 ───
 export const MBTI_TYPES = [
-  'INTJ', 'INTP', 'ENTJ', 'ENTP',
-  'INFJ', 'INFP', 'ENFJ', 'ENFP',
-  'ISTJ', 'ISFJ', 'ESTJ', 'ESFJ',
-  'ISTP', 'ISFP', 'ESTP', 'ESFP',
+  'INFJ', 'INFP', 'INTJ', 'INTP',
+  'ISFJ', 'ISFP', 'ISTJ', 'ISTP',
+  'ENFJ', 'ENFP', 'ENTJ', 'ENTP',
+  'ESFJ', 'ESFP', 'ESTJ', 'ESTP',
 ] as const;
 
 export type MbtiType = typeof MBTI_TYPES[number];
