@@ -2,10 +2,12 @@
 
 import { useSearchParams, useRouter } from 'next/navigation';
 import type { ChecklistData, Dimension, MatchResult, TeachingMethod } from '@/lib/types';
+import type { CrossPattern } from '@/lib/cross-analysis';
 import ProfileHeader from './ProfileHeader';
 import DimensionRadarChart from './DimensionRadarChart';
 import WarningCards from './WarningCards';
 import PaceInfo from './PaceInfo';
+import CrossInsights from './CrossInsights';
 import TeachingGuide from './TeachingGuide';
 import CurriculumRoadmap from './CurriculumRoadmap';
 
@@ -14,6 +16,7 @@ interface ResultPayload {
   dims: Dimension[];
   match: MatchResult;
   teaching: TeachingMethod | null;
+  crossInsights: CrossPattern[];
 }
 
 export default function ResultContent() {
@@ -50,7 +53,7 @@ export default function ResultContent() {
     );
   }
 
-  const { data, dims, match, teaching } = payload;
+  const { data, dims, match, teaching, crossInsights } = payload;
   const isCompact = match.lessons.some(l => l.phase === 2);
 
   return (
@@ -67,6 +70,7 @@ export default function ResultContent() {
         <DimensionRadarChart dimensions={dims} />
         <WarningCards warnings={match.warnings} />
         <PaceInfo pace={match.pace} totalWeeks={match.totalWeeks} />
+        <CrossInsights patterns={crossInsights || []} />
 
         {teaching && data.mbti && data.mbti !== '모름' && (
           <TeachingGuide method={teaching} mbti={data.mbti} />

@@ -7,6 +7,7 @@ import { STEPS, FIELD_CONFIG } from '@/lib/checklist-config';
 import { computeDimensions } from '@/lib/dimensions';
 import { generateMatching } from '@/lib/matching';
 import { getTeachingMethod } from '@/lib/teaching-method';
+import { getCrossInsights } from '@/lib/cross-analysis';
 import StepIndicator from './StepIndicator';
 import FieldRenderer from './FieldRenderer';
 
@@ -27,7 +28,8 @@ export default function WizardContainer() {
     const match = generateMatching(dims, data);
     const teaching = getTeachingMethod(data.mbti);
 
-    const payload = { data, dims, match, teaching };
+    const crossInsights = getCrossInsights(match.dims);
+    const payload = { data, dims, match, teaching, crossInsights };
     const encoded = btoa(encodeURIComponent(JSON.stringify(payload)));
     router.push(`/result?d=${encoded}`);
   };
