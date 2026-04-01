@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 
-const WizardContainer = dynamic(() => import('@/components/form/WizardContainer'), {
+const ResultContent = dynamic(() => import('@/components/result/ResultContent'), {
   ssr: false,
   loading: () => (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F7F3EE] via-[#EDE7DF] to-[#E8E0D5]">
@@ -9,6 +9,6 @@ const WizardContainer = dynamic(() => import('@/components/form/WizardContainer'
   ),
 });
 
-export default function Home() {
-  return <WizardContainer />;
+export default function ResultPage() {
+  return <ResultContent />;
 }
