@@ -51,7 +51,7 @@ export default function ResultContent() {
   }
 
   const { data, dims, match, teaching } = payload;
-  const isCompressed = (match.dims?.retention ?? 100) < 40;
+  const isCompact = match.lessons.some(l => l.phase === 2);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F7F3EE] via-[#EDE7DF] to-[#E8E0D5] p-4">
@@ -74,8 +74,7 @@ export default function ResultContent() {
 
         <CurriculumRoadmap
           lessons={match.lessons}
-          compressedIds={match.compressedIds}
-          isCompressed={isCompressed}
+          isCompact={isCompact}
         />
 
         <div className="text-center pt-4 border-t border-[#EDE7DF]">

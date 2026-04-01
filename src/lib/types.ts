@@ -62,11 +62,13 @@ export interface Lesson {
 }
 
 export type LessonPriority = 'essential' | 'emphasis' | 'normal' | 'optional';
+export type LessonPhase = 1 | 2;
 
 export interface LessonPlan extends Lesson {
   priority: LessonPriority;
   note: string;
   repeat: number;
+  phase: LessonPhase;
 }
 
 // ─── 매칭 결과 ───
