@@ -1,4 +1,4 @@
-import type { ChecklistData, Dimension, MatchResult, LessonPlan, LessonPriority, LessonPhase } from './types';
+import type { ChecklistData, Dimension, MatchResult, LessonPlan, LessonPriority, LessonPhase, Warning } from './types';
 import { CURRICULUM } from './curriculum';
 
 // ─── 유형별 커리큘럼 순서 ───
@@ -200,15 +200,43 @@ export function generateMatching(dims: Dimension[], data: ChecklistData): MatchR
     return { ...lesson, ...tags, phase };
   });
 
-  // 주의사항
-  const warnings: string[] = [];
-  if (d.retention < 40) warnings.push('이탈 위험 높음 — 매 수업 후 관심/안부 연락 필수');
-  if (d.stability < 40) warnings.push('내적 불안정 — 상담/돌봄 병행 권장');
-  if (d.relationship < 40) warnings.push('인도자 신뢰도 낮음 — 관계 형성에 시간 투자 필요');
-  if ((Number(data.cult_risk) || 1) >= 3) warnings.push('이단 경험 — 18과 정통과 이단 반드시 강조');
+  // 주의사항 (🔴 critical / 🟠 caution / ⚠️ note)
+  const warnings: Warning[] = [];
+  const riskFactors = data.risk_factors || [];
+  const personality = data.personality || [];
   const severeMental = ['우울증 진단', '기타 정신질환', '치매/인지저하'];
-  if (severeMental.includes(data.health_mental || '')) warnings.push('정신건강 주의 — 전문 상담 연계 고려');
-  if (data.family_faith === '가족 반대') warnings.push('가족 반대 환경 — 19과(핍박) 과정에서 심리적 지지 강화');
+  const EXTERNAL_HIGH = ['주변에 반대하는 사람 있음', '이미 부정적 정보 접한 적 있음', '적극적으로 검증하려는 성향'];
+
+  // ── 🔴 탈락 키워드 경고 (critical) ──
+  if (['특별한 목적 없음', '지인 따라서'].includes(data.motivation || ''))
+    warnings.push({ level: 'critical', message: '수강 동기 불명확 — 첫 상담에서 "왜 듣고 싶은지" 반드시 확인. 동기 없이 시작하면 탈락률 80%+' });
+
+  if (['우선 들어보겠다 수준', '확답 없이 시작'].includes(data.commitment || ''))
+    warnings.push({ level: 'critical', message: '기간 미확답 — 최소 수강 기간을 명확히 합의하지 않으면 중도 이탈 확률 매우 높음' });
+
+  if (data.commitment === '외부 일정(군대/취업 등)과 충돌 가능')
+    warnings.push({ level: 'critical', message: '외부 일정 충돌 — 군대/취업/학업 등 확정 일정 먼저 확인. 불확실 시 핵심 압축코스 검토' });
+
+  if (EXTERNAL_HIGH.includes(data.external_info || ''))
+    warnings.push({ level: 'critical', message: '외부 부정정보 접촉 위험 — 비방 영상/이단 상담소 접촉 시 즉시 이탈 패턴. 올바른 정보 프레임 사전 제공' });
+
+  // ── 🟠 주의 경고 (caution) ──
+  if (riskFactors.includes('부모/가족 간섭·통제'))
+    warnings.push({ level: 'caution', message: '가족 간섭 위험 — 부모가 다른 일정을 갑자기 부여하면 수강 포기 패턴. 가족 동의 여부 사전 확인' });
+
+  if (riskFactors.includes('시간 부족') && riskFactors.includes('경제적 부담'))
+    warnings.push({ level: 'caution', message: '세상가시 복합 — 시간+경제 이중 부담. 핵심 압축코스 강력 권장' });
+
+  if (personality.includes('고집 있음') && (Number(data.openness) || 3) <= 2)
+    warnings.push({ level: 'caution', message: '자기성찰 회피 — 분석적 접근보다 경험적 접근 필요' });
+
+  // ── ⚠️ 기존 경고 (note) ──
+  if (d.retention < 40) warnings.push({ level: 'note', message: '이탈 위험 높음 — 매 수업 후 관심/안부 연락 필수' });
+  if (d.stability < 40) warnings.push({ level: 'note', message: '내적 불안정 — 상담/돌봄 병행 권장' });
+  if (d.relationship < 40) warnings.push({ level: 'note', message: '인도자 신뢰도 낮음 — 관계 형성에 시간 투자 필요' });
+  if ((Number(data.cult_risk) || 1) >= 3) warnings.push({ level: 'note', message: '이단 경험 — 18과 정통과 이단 반드시 강조' });
+  if (severeMental.includes(data.health_mental || '')) warnings.push({ level: 'note', message: '정신건강 주의 — 전문 상담 연계 고려' });
+  if (data.family_faith === '가족 반대') warnings.push({ level: 'note', message: '가족 반대 환경 — 19과(핍박) 과정에서 심리적 지지 강화' });
 
   return {
     typeName: typeInfo.name,

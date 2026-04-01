@@ -2,11 +2,11 @@ import type { StepConfig, FieldConfig } from './types';
 import { MBTI_TYPES } from './types';
 
 export const STEPS: StepConfig[] = [
-  { id: 'basic', title: '기본 정보', icon: '👤', fields: [1, 2, 3, 4, 19] },
+  { id: 'basic', title: '기본 정보', icon: '👤', fields: [1, 2, 20, 3, 4, 19] },
   { id: 'background', title: '배경 파악', icon: '📋', fields: [5, 6] },
   { id: 'inner', title: '내면 탐색', icon: '🌱', fields: [7, 8, 9] },
-  { id: 'spiritual', title: '영적 상태', icon: '✝️', fields: [10, 11, 12, 13] },
-  { id: 'assess', title: '종합 평가', icon: '📊', fields: [14, 15, 16, 17, 18] },
+  { id: 'spiritual', title: '영적 상태', icon: '✝️', fields: [10, 21, 11, 12, 13] },
+  { id: 'assess', title: '종합 평가', icon: '📊', fields: [14, 15, 16, 22, 17, 18] },
 ];
 
 export const FIELD_CONFIG: Record<number, FieldConfig> = {
@@ -84,7 +84,8 @@ export const FIELD_CONFIG: Record<number, FieldConfig> = {
     options: [
       '시간 부족', '가족 반대', '건강 악화', '경제적 부담',
       '교회 내 갈등', '교리 거부감', '과거 상처(교회)', '이사/이동',
-      '의지 부족', '주변 부정적 영향', '이단 접촉 가능성', '특별한 위험 없음',
+      '의지 부족', '주변 부정적 영향', '이단 접촉 가능성',
+      '부모/가족 간섭·통제', '특별한 위험 없음',
     ],
   },
   9: {
@@ -196,6 +197,45 @@ export const FIELD_CONFIG: Record<number, FieldConfig> = {
     options: [
       { value: '모름', label: '모름 / 미입력' },
       ...MBTI_TYPES.map(t => ({ value: t, label: t })),
+    ],
+  },
+  20: {
+    label: '수강 동기 / 목적',
+    description: '복음방에 참여하게 된 이유',
+    type: 'select',
+    key: 'motivation',
+    options: [
+      { value: '본인 의지로 관심', label: '본인 의지로 관심' },
+      { value: '인도자 권유로', label: '인도자 권유로' },
+      { value: '지인 따라서', label: '지인 따라서' },
+      { value: '특별한 목적 없음', label: '특별한 목적 없음' },
+      { value: '기타', label: '기타' },
+    ],
+  },
+  21: {
+    label: '외부 비방/부정정보 접촉',
+    description: '외부에서 부정적 정보를 접할 가능성',
+    type: 'select',
+    key: 'external_info',
+    options: [
+      { value: '가능성 없음', label: '가능성 없음' },
+      { value: '인터넷 검색 가능성 있음', label: '인터넷 검색 가능성 있음' },
+      { value: '주변에 반대하는 사람 있음', label: '주변에 반대하는 사람 있음' },
+      { value: '이미 부정적 정보 접한 적 있음', label: '이미 부정적 정보 접한 적 있음' },
+      { value: '적극적으로 검증하려는 성향', label: '적극적으로 검증하려는 성향' },
+    ],
+  },
+  22: {
+    label: '기간 확답 여부',
+    description: '수강 기간에 대한 합의 정도',
+    type: 'select',
+    key: 'commitment',
+    options: [
+      { value: '명확하게 확답함 (N개월 이상)', label: '명확하게 확답함 (N개월 이상)' },
+      { value: '대략적으로 동의함', label: '대략적으로 동의함' },
+      { value: '우선 들어보겠다 수준', label: '우선 들어보겠다 수준' },
+      { value: '확답 없이 시작', label: '확답 없이 시작' },
+      { value: '외부 일정(군대/취업 등)과 충돌 가능', label: '외부 일정(군대/취업 등)과 충돌 가능' },
     ],
   },
 };

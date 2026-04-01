@@ -28,6 +28,14 @@ const FAM_MAP: Record<string, number> = {
   '가족 모두 신앙인': 5, '일부 신앙인': 4, '본인만 관심': 3, '가족 반대': 1, '해당없음': 3,
 };
 
+const MOTIVATION_MAP: Record<string, number> = {
+  '본인 의지로 관심': 5, '인도자 권유로': 3, '지인 따라서': 2, '특별한 목적 없음': 1, '기타': 2,
+};
+
+const COMMITMENT_MAP: Record<string, number> = {
+  '명확하게 확답함 (N개월 이상)': 5, '대략적으로 동의함': 4, '우선 들어보겠다 수준': 2, '확답 없이 시작': 1, '외부 일정(군대/취업 등)과 충돌 가능': 1,
+};
+
 export function computeDimensions(data: ChecklistData): Dimension[] {
   const openness = Number(data.openness) || 3;
   const god = GOD_MAP[data.believe_god || ''] || 3;
@@ -49,19 +57,28 @@ export function computeDimensions(data: ChecklistData): Dimension[] {
   const fam = FAM_MAP[data.family_faith || ''] || 3;
   const relStrength = Math.round(((trust + fam + openness) / 15) * 100);
 
-  const risks = (data.risk_factors || []).length;
+  // 유지 안정성: 60% 침요소 + 20% 수강동기 + 20% 기간확답
+  const risks = (data.risk_factors || []).filter(r => r !== '특별한 위험 없음').length;
   const hasNone = (data.risk_factors || []).includes('특별한 위험 없음');
-  const riskScore = hasNone ? 90 : Math.max(10, Math.round(100 - (risks * 12)));
+  const baseRetention = hasNone ? 90 : Math.max(10, Math.round(100 - (risks * 12)));
+  const motivation = MOTIVATION_MAP[data.motivation || ''] || 3;
+  const commitment = COMMITMENT_MAP[data.commitment || ''] || 3;
+  const retention = Math.round(
+    baseRetention * 0.6 +
+    (motivation / 5) * 100 * 0.2 +
+    (commitment / 5) * 100 * 0.2
+  );
 
+  // 성장 잠재력: 관심사 + 성경관심 + 오픈여부 + 수강동기
   const interests = (data.interests || []).length;
-  const potential = Math.min(100, Math.round(((Math.min(interests, 5) * 4 + bible + openness) / 30) * 100));
+  const potential = Math.min(100, Math.round(((Math.min(interests, 5) * 4 + bible + openness + motivation) / 35) * 100));
 
   return [
     { key: 'receptivity', name: '수용성', score: receptivity, icon: '🚪', color: '#4A90D9', level: receptivity >= 70 ? '열려있음' : receptivity >= 40 ? '보통' : '닫혀있음' },
     { key: 'sensitivity', name: '영적 감수성', score: sensitivity, icon: '✨', color: '#7B61FF', level: sensitivity >= 70 ? '높음' : sensitivity >= 40 ? '보통' : '낮음' },
     { key: 'stability', name: '내적 안정성', score: stability, icon: '🏠', color: '#2EAE6D', level: stability >= 70 ? '안정' : stability >= 40 ? '보통' : '돌봄 필요' },
     { key: 'relationship', name: '관계 강도', score: relStrength, icon: '🤝', color: '#E8913A', level: relStrength >= 70 ? '강함' : relStrength >= 40 ? '보통' : '약함' },
-    { key: 'retention', name: '유지 안정성', score: riskScore, icon: '🛡️', color: '#D94A6B', level: riskScore >= 70 ? '안정' : riskScore >= 40 ? '주의' : '고위험' },
+    { key: 'retention', name: '유지 안정성', score: retention, icon: '🛡️', color: '#D94A6B', level: retention >= 70 ? '안정' : retention >= 40 ? '주의' : '고위험' },
     { key: 'potential', name: '성장 잠재력', score: potential, icon: '🌱', color: '#5BBD72', level: potential >= 70 ? '높음' : potential >= 40 ? '보통' : '낮음' },
   ];
 }

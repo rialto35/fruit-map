@@ -6,11 +6,12 @@ export interface ChecklistData {
   gender?: string;
   guide_name?: string;
   guide_relation?: string;
-  openness?: string; // "1"~"5"
+  motivation?: string;     // ★ 수강 동기/목적
+  openness?: string;       // "1"~"5"
   marital?: string;
   children?: string;
   family_faith?: string;
-  mbti?: string; // 16 MBTI types or "모름"
+  mbti?: string;           // 16 MBTI types or "모름"
 
   // Step 2: 배경 파악
   religion_bg?: string;
@@ -24,10 +25,11 @@ export interface ChecklistData {
   interests?: string[];
 
   // Step 4: 영적 상태
-  cult_risk?: string; // "1"~"5"
+  cult_risk?: string;      // "1"~"5"
+  external_info?: string;  // ★ 외부 비방/부정정보 접촉
   believe_god?: string;
   believe_spirit?: string;
-  believe_soul?: string; // "1"~"5"
+  believe_soul?: string;   // "1"~"5"
   bible_interest?: string; // "1"~"5"
 
   // Step 5: 종합 평가
@@ -37,7 +39,8 @@ export interface ChecklistData {
   available_day?: string;
   available_time?: string;
   location?: string;
-  trust_level?: string; // "1"~"5"
+  commitment?: string;     // ★ 기간 확답 여부
+  trust_level?: string;    // "1"~"5"
   testimony?: string;
 }
 
@@ -71,6 +74,14 @@ export interface LessonPlan extends Lesson {
   phase: LessonPhase;
 }
 
+// ─── 경고 ───
+export type WarningLevel = 'critical' | 'caution' | 'note';
+
+export interface Warning {
+  level: WarningLevel;
+  message: string;
+}
+
 // ─── 매칭 결과 ───
 export interface MatchResult {
   typeName: string;
@@ -79,7 +90,7 @@ export interface MatchResult {
   lessons: LessonPlan[];
   pace: string;
   totalWeeks: string;
-  warnings: string[];
+  warnings: Warning[];
   compressedIds: number[];
   dims: Record<string, number>;
 }

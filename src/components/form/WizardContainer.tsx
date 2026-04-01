@@ -15,7 +15,7 @@ import FieldRenderer from './FieldRenderer';
 // 점수 계산에 사용되는 핵심 필드
 const REQUIRED_KEYS: (keyof ChecklistData)[] = [
   'openness', 'believe_god', 'believe_spirit', 'believe_soul',
-  'bible_interest', 'trust_level',
+  'bible_interest', 'trust_level', 'motivation', 'commitment',
 ];
 
 function getMissingCount(data: ChecklistData): number {
