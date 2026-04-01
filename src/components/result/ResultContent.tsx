@@ -3,12 +3,14 @@
 import { useSearchParams, useRouter } from 'next/navigation';
 import type { ChecklistData, Dimension, MatchResult, TeachingMethod } from '@/lib/types';
 import type { CrossPattern } from '@/lib/cross-analysis';
+import type { CounselingResult } from '@/lib/counseling';
 import ProfileHeader from './ProfileHeader';
 import DimensionRadarChart from './DimensionRadarChart';
 import WarningCards from './WarningCards';
 import PaceInfo from './PaceInfo';
 import CrossInsights from './CrossInsights';
 import TeachingGuide from './TeachingGuide';
+import CounselingGuide from './CounselingGuide';
 import CurriculumRoadmap from './CurriculumRoadmap';
 
 interface ResultPayload {
@@ -17,6 +19,7 @@ interface ResultPayload {
   match: MatchResult;
   teaching: TeachingMethod | null;
   crossInsights: CrossPattern[];
+  counseling: CounselingResult | null;
 }
 
 export default function ResultContent() {
@@ -53,7 +56,7 @@ export default function ResultContent() {
     );
   }
 
-  const { data, dims, match, teaching, crossInsights } = payload;
+  const { data, dims, match, teaching, crossInsights, counseling } = payload;
   const isCompact = match.lessons.some(l => l.phase === 2);
 
   return (
@@ -75,6 +78,8 @@ export default function ResultContent() {
         {teaching && data.mbti && data.mbti !== '모름' && (
           <TeachingGuide method={teaching} mbti={data.mbti} />
         )}
+
+        {counseling && <CounselingGuide guide={counseling} />}
 
         <CurriculumRoadmap
           lessons={match.lessons}
